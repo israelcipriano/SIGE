@@ -192,7 +192,6 @@ button:hover {
 .forgot-link {
   margin-top: 20px;
   font-size: 14px;
-  text-decoration: none;
   color: #000;
   opacity: 0.8;
 }
@@ -200,13 +199,12 @@ button:hover {
 .forgot-link:hover {
   opacity: 1;
 }
-
 /* RESPONSIVO */
 @media (max-width: 900px) {
   body {
-    height: auto; /* deixa altura automática */
-    display: block; /* remove o flex vertical */
-    padding-top: 5px; /* distância do topo da tela */
+    height: auto; 
+    display: block;
+    padding-top: 5px;
   }
 
   .login-box {
@@ -215,7 +213,7 @@ button:hover {
     border-bottom: 3px solid grey;
     flex-direction: column;
     min-height: auto;
-    margin: 0 auto; /* centraliza horizontalmente */
+    margin: 0 auto; 
   }
 
   .logo-area {
@@ -226,16 +224,14 @@ button:hover {
     border-top-right-radius: 0;
     border-bottom-left-radius: 30px;
     border-bottom-right-radius: 30px;
-    margin-top: 0; /* removido, padding-top do body controla distância */
+    margin-top: 0;
   }
 
-  /* Reduz logo */
   .logo {
     max-width: 150px;
     transform: scale(1);
   }
 
-  /* SIGE e subtítulo mais evidentes */
   .SIGE {
     font-size: 32px;
     letter-spacing: 3px;
@@ -259,14 +255,25 @@ button:hover {
     margin-bottom: 80px;
   }
 
+  /* AUMENTANDO TAMANHO DOS INPUTS */
   .input-container {
-    width: 85%;
+    width: 80%; /* maior que antes */
+    margin-bottom: 10px;
+  }
+
+  .input-container input {
+    padding: 15px 10px 15px 35px; /* mais alto */
+    font-size: 18px; /* texto maior */
+  }
+
+  /* AUMENTANDO TAMANHO DO BOTÃO */
+  button {
+    padding: 15px 25px; /* maior */
+    font-size: 18px;
   }
 
   .form-area h2 {
     font-size: 26px;
   }
-  .button {
-    width: 40px;
-  }
 }
+
