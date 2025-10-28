@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap');
+
 * {
   margin: 0;
   padding: 0;
@@ -6,7 +8,7 @@
 }
 
 body {
-  background-color: #5b9ec2;
+  background-color: #d3d3d3;
   height: 100vh;
   display: flex;
   align-items: center;
@@ -15,49 +17,84 @@ body {
 
 .container {
   width: 100%;
-  max-width: 700px;
+  max-width: 1200px; /* mais largo para destacar a logo */
   padding: 20px;
 }
 
 .login-box {
   display: flex;
   width: 100%;
-  background-color: #a0c4db;
+  background-color: #c8d9dd;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
-  min-height: 450px; 
+  min-height: 450px;
 }
 
+/* LOGO ocupa 80% */
 .logo-area {
-  background-color: #0e3c66;
-  flex: 0.15;
+  background-color: #1a2530;
+  flex: 0.8;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 10px;
+  padding: 20px;
 }
 
 .logo {
-  width: 250px;
-  height: 250px;
+  width: 100%;
+  max-width: 420px;
+  height: auto;
   object-fit: contain;
-  transform: scale(1.5);
-  transition: transform 0.3s ease; 
+  transform: scale(1.3);
+  transition: transform 0.3s ease;
 }
 
-
-.form-area {
-  flex: 2.0; 
-  padding: 60px 40px;
-}
-
-.form-area h2 {
-  font-size: 40px;
-  color: #2e5984;
-  margin-bottom: 25px;
+.SIGE {
+  color: white;
+  font-size: 34px;
   font-weight: bold;
-  text-align: left; 
+  letter-spacing: 2px;
+  margin-bottom: 5px;
+}
+
+.subtitulo {
+  color: #dcdcdc;
+  font-size: 15px;
+  font-style: italic;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+/* Linha branca abaixo do subtítulo */
+.subtitulo::after {
+  content: "";
+  display: block;
+  width: 170px;
+  height: 2px;
+  background-color: #ffffff;
+  margin: 10px auto 0;
+  border-radius: 2px;
+}
+
+/* FORMULÁRIO ocupa 20% */
+.form-area {
+  box-shadow: inset 0 0 7px rgba(59, 58, 58, 0.61);
+  flex: 0.3;
+  padding: 50px 30px;
+  background-color: #c8d9dd;
+}
+
+/* Título LOGIN com fonte Poppins */
+.form-area h2 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 750; /* negrito */
+  font-size: 50px;
+  color: #000000;
+  margin-bottom: 25px;
+  text-align: center;
+  letter-spacing: 1px;
 }
 
 form {
@@ -67,7 +104,7 @@ form {
 }
 
 .input-container {
-  margin-top: 28px;
+  margin-top: 50px;
   position: relative;
   width: 100%;
   margin-bottom: 10px;
@@ -76,19 +113,23 @@ form {
 .input-container input {
   width: 100%;
   padding: 12px 12px 12px 45px;
-  border: 2px solid transparent;
-  border-radius: 25px;
-  background-color: #3a75a7;
-  color: white;
+  border-top: transparent;
+  border-left: transparent;
+  border-bottom: 3px solid gray;
+  border-right: 3px solid gray;
+  border-radius: 7px;
+  background-color: #fffffe;
+  color: rgb(0, 0, 0);
   outline: none;
-  transition: all 0.4s ease;
   font-size: 15px;
   box-shadow: inset 0 0 0 transparent;
+  transition: border 0.6s ease, box-shadow 0.6s ease, background-color 0.4s ease;
 }
 
 .input-container input::placeholder {
-  color: #cce0f2;
+  color: #000000;
   opacity: 0.8;
+  font-family: Helvetica;
 }
 
 .input-container .icon {
@@ -96,38 +137,45 @@ form {
   top: 50%;
   left: 15px;
   transform: translateY(-50%);
-  color: #cce0f2;
+  color: #000000;
   font-size: 16px;
   pointer-events: none;
-  transition: all 0.4s ease;
+  transition: all 0.5s ease;
 }
 
 .input-container input:focus {
-  background-color: #4b89c4;
-  border: 2px solid #5c6596;
-  box-shadow: 0 0 10px #5587b6aa;
+  background-color: #ffffff;
+  border-bottom: 5px solid grey;
+  border-right: 5px solid grey;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
 }
 
 .input-container input:focus + .icon {
-  color: #fdf6a3;
+  color: grey;
   transform: translateY(-50%) scale(1.3);
   filter: brightness(1.0);
 }
 
 button {
   margin-top: 20px;
-  background-color: #fdf6a3;
-  color: #2e5984;
+  background-color: #2a6ed2;
+  color: #ffffff;
   border: none;
-  border-radius: 20px;
+  border-radius: 7px;
   padding: 8px 20px;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: background-color 0.5s ease, transform 0.5s ease;
   width: fit-content;
 }
 
 button:hover {
-  background-color: #fbe97d;
+  color: #2a6ed2;
+  background-color: rgb(255, 255, 255);
   transform: scale(1.05);
+  border: 2px solid grey;
+}
+
+.forgot-link {
+  margin-top: 20px;
 }
