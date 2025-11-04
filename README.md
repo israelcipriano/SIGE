@@ -14,7 +14,8 @@ Antes de mudar de branch, verifique se você não alterou nenhum arquivo localme
 
 Para mudar para a branch de front-end, use:
 
-$ git switch front
+$ git switch front seu nome !!!
+
 
 🔄 3️⃣ Atualizando a branch front
 
