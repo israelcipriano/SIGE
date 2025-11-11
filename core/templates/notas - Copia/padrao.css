@@ -181,8 +181,8 @@ tr:hover {
     font-size: 15px;
     border: none;
     transition: background 0.3s ease, transform 0.2s ease;
-    float: right;
-    margin-top: -5px;
+    float: right;              /* mantém o botão no mesmo lugar */
+    margin-top: -5px;          /* leve ajuste vertical */
     margin-bottom: 10px;
     cursor: pointer;
 }
