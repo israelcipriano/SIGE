@@ -32,9 +32,9 @@
       <img src="{% static 'core/img/disciplina.png' %}" alt="Disciplina" />
       <p>Disciplinas</p>
     </a>
-    <a href="{% url 'turma' %}" class="icone" title="Diário">
+    <a href="{% url 'listar_turmas' %}" class="icone" title="Diário">
       <img src="{% static 'core/img/turma.png' %}" alt="Turma" />
-      <p>Diário</p>
+      <p>Turmas</p>
     </a>
     {% if cargo in 'diretor vice_diretor' or user.is_superuser %}
   <div class="gestao-container">
