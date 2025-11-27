@@ -19,7 +19,22 @@
 
   <!-- Topo -->
   <div class="top-controls">
-    
+
+    <!-- Editar turma -->
+    <a href="{% url 'editar_turma' turma.id %}">
+      <button class="cadastrar-btn" style="background:#1e90ff">
+        <i class="fas fa-pen"></i> Editar Turma
+      </button>
+    </a>
+
+    <!-- Excluir turma -->
+    <a href="{% url 'excluir_turma' turma.id %}"
+       onclick="return confirm('Tem certeza que deseja excluir esta turma e todas as disciplinas dela?');">
+      <button class="cadastrar-btn" style="background:#d9534f">
+        <i class="fas fa-trash"></i> Excluir Turma
+      </button>
+    </a>
+
     <!-- botão adicionar disciplina -->
     <a href="{% url 'cadastrar_disciplina_turma' turma.id %}">
       <button class="cadastrar-btn">
