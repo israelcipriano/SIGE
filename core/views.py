@@ -436,20 +436,30 @@ def excluir_disciplina(request, disciplina_id):
 
 #Turma
 
+from datetime import datetime
+
 @login_required
 def listar_turmas(request):
     if not request.user.is_superuser:
         return redirect('login')
 
+    ano_atual = datetime.now().year
+    ano_filtro = request.GET.get('ano', ano_atual)
+
     query = request.GET.get('q', '')
+
+    turmas = Turma.objects.filter(ano=ano_filtro)
+
     if query:
-        turmas = Turma.objects.filter(nome__icontains=query)
-    else:
-        turmas = Turma.objects.all()
+        turmas = turmas.filter(nome__icontains=query)
+
+    anos_disponiveis = Turma.objects.values_list('ano', flat=True).distinct().order_by('-ano')
 
     return render(request, 'core/listar_turmas.html', {
         'turmas': turmas,
         'query': query,
+        'ano_filtro': int(ano_filtro),
+        'anos_disponiveis': anos_disponiveis
     })
 
 
@@ -462,26 +472,28 @@ def cadastrar_turma(request):
 
     if request.method == 'POST':
         nome = request.POST['nome']
-        if Turma.objects.filter(nome=nome).exists():
-            erro = 'Essa turma já existe.'
+        turno = request.POST.get('turno')
+        ano = request.POST.get('ano')
+
+        if Turma.objects.filter(nome=nome, ano=ano).exists():
+            erro = 'Essa turma já existe neste ano.'
         else:
-            Turma.objects.create(nome=nome)
+            Turma.objects.create(nome=nome, turno=turno, ano=ano)
             return redirect('listar_turmas')
 
     return render(request, 'core/cadastrar_turma.html', {'erro': erro})
 
 
 
-@login_required
 def editar_turma(request, turma_id):
-    if not request.user.is_superuser:
-        return redirect('login')
+    turma = Turma.objects.get(id=turma_id)
 
-    turma = get_object_or_404(Turma, id=turma_id)
-
-    if request.method == 'POST':
-        turma.nome = request.POST['nome']
+    if request.method == "POST":
+        turma.nome = request.POST.get('nome')
+        turma.turno = request.POST.get('turno')
+        turma.ano = request.POST.get('ano')
         turma.save()
+        messages.success(request, "Turma atualizada com sucesso!")
         return redirect('listar_turmas')
 
     return render(request, 'core/editar_turma.html', {'turma': turma})

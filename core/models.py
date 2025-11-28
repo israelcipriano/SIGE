@@ -2,10 +2,19 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Turma(models.Model):
+    TURNO_CHOICES = [
+        ('manha', 'Manhã'),
+        ('tarde', 'Tarde'),
+        ('noite', 'Noite'),
+    ]
+
     nome = models.CharField(max_length=100)
+    turno = models.CharField(max_length=20, choices=TURNO_CHOICES, default='manha')
+    ano = models.IntegerField()
 
     def __str__(self):
-        return self.nome
+        return f"{self.nome} - {self.get_turno_display()} ({self.ano})"
+
 
 class Professor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

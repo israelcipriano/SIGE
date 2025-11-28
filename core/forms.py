@@ -62,7 +62,8 @@ class DisciplinaForm(forms.ModelForm):
 class TurmaForm(forms.ModelForm):
     class Meta:
         model = Turma
-        fields = ['nome']
+        fields = ['nome', 'turno', 'ano']
+
 
 
 # --- NOTA ---
