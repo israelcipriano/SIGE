@@ -74,15 +74,13 @@ class NotaForm(forms.ModelForm):
 
 
 class EditarPerfilForm(forms.ModelForm):
-    nome_completo = forms.CharField(
-        label='Nome completo',
-        required=True  # Se quiser obrigatório, deixa True, senão False
-    )
+    nome_completo = forms.CharField(label='Nome completo', required=True)
     nova_senha = forms.CharField(
         required=False,
         label='Nova senha (opcional)',
-        widget=forms.PasswordInput(attrs={'placeholder': 'Deixe em branco para manter a senha atual'})
+        widget=forms.PasswordInput
     )
+    foto = forms.ImageField(required=False)
 
     class Meta:
         model = User

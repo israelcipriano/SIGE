@@ -1,27 +1,40 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block title %}Painel do Superusuário{% endblock %}
-{% block header_title %}Painel do Superusuário{% endblock %}
+{% block title %}Editar Perfil{% endblock %}
+{% block header_title %}Editar Perfil{% endblock %}
 
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'core/css/cadastro_aluno.css' %}">
 {% endblock %}
 
-{% block user_info %}
-  <span>Olá, <a href="#">{{ request.user.get_full_name|default:request.user.username }}</a></span>
-  <a href="{% url 'painel_super' %}"><i class="fas fa-arrow-left"></i></a>
-  <a href="{% url 'logout' %}"><i class="fas fa-power-off"></i></a>
-{% endblock %}
-
 {% block content %}
 <div class="container">
+  
   <h2>Editar Perfil</h2>
 
-  <form method="post">
+  <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
+
     {{ form.as_p }}
-    <button type="submit" class="submit-btn">Salvar</button>
+
+    <!-- Campo para escolher nova foto -->
+    <label><strong>Foto de Perfil:</strong></label>
+    <input type="file" name="foto">
+
+    <!-- Mostrar a foto atual se existir -->
+    {% if request.user.professor.foto %}
+        <img src="{{ request.user.professor.foto.url }}" width="120" style="display:block;margin-top:10px;border-radius:8px;">
+    
+    {% elif request.user.aluno.foto %}
+        <img src="{{ request.user.aluno.foto.url }}" width="120" style="display:block;margin-top:10px;border-radius:8px;">
+    
+    {% elif request.user.gestor.foto %}
+        <img src="{{ request.user.gestor.foto.url }}" width="120" style="display:block;margin-top:10px;border-radius:8px;">
+    {% endif %}
+
+    <button type="submit" class="submit-btn" style="margin-top:20px;">Salvar</button>
   </form>
+
 </div>
 {% endblock %}

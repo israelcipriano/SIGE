@@ -68,25 +68,42 @@ def painel_super(request):
 @user_passes_test(is_superuser)
 def editar_perfil(request):
     user = request.user
+
+    # Identifica qual tipo de perfil o superusuário está usando
+    perfil = None
+    if hasattr(user, "professor"):
+        perfil = user.professor
+    elif hasattr(user, "aluno"):
+        perfil = user.aluno
+    elif hasattr(user, "gestor"):
+        perfil = user.gestor
+
     if request.method == 'POST':
-        form = EditarPerfilForm(request.POST, instance=user)
+        form = EditarPerfilForm(request.POST, request.FILES, instance=user)
+
         if form.is_valid():
-            # Salva dados normais (nome, email) sem alterar a senha
             user = form.save(commit=False)
             user.save()
-            
-            # Só altera a senha se algo foi digitado
+
             nova_senha = form.cleaned_data.get('nova_senha')
             if nova_senha:
                 user.set_password(nova_senha)
                 user.save()
                 update_session_auth_hash(request, user)
-            
-            messages.success(request, "Perfil atualizado com sucesso.")
-            return redirect('painel_super')
+
+            # Salva foto (se houver perfil)
+            foto = form.cleaned_data.get("foto")
+            if perfil and foto:
+                perfil.foto = foto
+                perfil.save()
+
+            messages.success(request, "Perfil atualizado com sucesso!")
+            return redirect("painel_super")
+
     else:
         form = EditarPerfilForm(instance=user)
-    return render(request, 'core/editar_perfil.html', {'form': form})
+
+    return render(request, "core/editar_perfil.html", {"form": form, "perfil": perfil})
 
 
 # -------------------- PROFESSORES --------------------

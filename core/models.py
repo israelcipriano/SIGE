@@ -18,7 +18,8 @@ class Turma(models.Model):
 
 class Professor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    nome_completo = models.CharField(max_length=255)  # <-- adiciona isso
+    nome_completo = models.CharField(max_length=255)
+    foto = models.ImageField(upload_to="fotos/", null=True, blank=True)
 
     def __str__(self):
         return self.nome_completo
@@ -26,9 +27,10 @@ class Professor(models.Model):
 
 class Aluno(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    nome_completo = models.CharField(max_length=255)  # <-- adicionei aqui
+    nome_completo = models.CharField(max_length=255)
     idade = models.IntegerField()
     turma = models.ForeignKey(Turma, on_delete=models.CASCADE)
+    foto = models.ImageField(upload_to="fotos/", null=True, blank=True)
 
     def __str__(self):
         return self.nome_completo
@@ -74,6 +76,9 @@ class Gestor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     nome_completo = models.CharField(max_length=150)
     cargo = models.CharField(max_length=20, choices=CARGO_CHOICES)
+    foto = models.ImageField(upload_to="fotos/", null=True, blank=True)
 
     def __str__(self):
         return f"{self.nome_completo} ({self.get_cargo_display()})"
+    
+    
