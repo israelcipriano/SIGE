@@ -1,31 +1,47 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block title %}Painel do Superusuário{% endblock %}
-{% block header_title %}Painel do Superusuário{% endblock %}
-
-{% block extra_css %}
-  <link rel="stylesheet" href="{% static 'core/css/cadastro_aluno.css' %}">
-{% endblock %}
+{% block title %}Editar Turma{% endblock %}
+{% block header_title %}Editar Turma{% endblock %}
 
 {% block user_info %}
-  <span>Olá, <a href="{% url 'editar_perfil_super' %}" title="Editar Perfil">{{ request.user.get_full_name|default:request.user.username }}</a></span>
+  <span>Olá, {{ request.user.get_full_name }}</span>
   <a href="{% url 'painel_super' %}" title="Voltar ao Painel"><i class="fas fa-arrow-left"></i></a>
   <a href="{% url 'logout' %}" title="Sair"><i class="fas fa-power-off"></i></a>
 {% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'core/css/lista_discentes.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="container">
-  <h2>Editar Turma</h2>
+<div class="container content-box">
 
-  <form method="post">
-    {% csrf_token %}
-    <div class="form-group">
-      <label for="nome">Nome da Turma:</label>
-      <input type="text" id="nome" name="nome" value="{{ turma.nome }}" required>
-    </div>
+    <h2 class="titulo">EDITAR TURMA</h2>
 
-    <button type="submit" class="submit-btn">Salvar Alterações</button>
-  </form>
+    <form method="post" class="formulario-geral">
+        {% csrf_token %}
+
+        <!-- Nome -->
+        <label>Nome da Turma:</label>
+        <input type="text" name="nome" value="{{ turma.nome }}" required>
+
+        <!-- Turno -->
+        <label>Turno:</label>
+        <select name="turno" required>
+            <option value="manhã" {% if turma.turno == "manhã" %}selected{% endif %}>Manhã</option>
+            <option value="tarde" {% if turma.turno == "tarde" %}selected{% endif %}>Tarde</option>
+            <option value="noite" {% if turma.turno == "noite" %}selected{% endif %}>Noite</option>
+        </select>
+
+        <!-- Ano -->
+        <label>Ano Letivo:</label>
+        <input type="number" name="ano" value="{{ turma.ano }}" required>
+
+        <button type="submit" class="cadastrar-btn" style="margin-top: 20px;">
+            <i class="fas fa-save"></i> Salvar Alterações
+        </button>
+    </form>
+
 </div>
 {% endblock %}
