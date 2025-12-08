@@ -74,14 +74,11 @@ class NotaForm(forms.ModelForm):
 
 
 class EditarPerfilForm(forms.ModelForm):
-    nome_completo = forms.CharField(
-        label='Nome completo',
-        required=True  # Se quiser obrigatório, deixa True, senão False
-    )
+    nome_completo = forms.CharField(label='Nome completo', required=True)
     nova_senha = forms.CharField(
         required=False,
         label='Nova senha (opcional)',
-        widget=forms.PasswordInput(attrs={'placeholder': 'Deixe em branco para manter a senha atual'})
+        widget=forms.PasswordInput
     )
 
     class Meta:
@@ -91,7 +88,6 @@ class EditarPerfilForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.instance and (not self.initial.get('nome_completo')):
-            # inicializa o campo com first_name + last_name
             self.initial['nome_completo'] = f"{self.instance.first_name} {self.instance.last_name}"
 
     def save(self, commit=True):
@@ -102,6 +98,7 @@ class EditarPerfilForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+
 
 
 # --- EDITAR PERFIL PROFESSOR ---

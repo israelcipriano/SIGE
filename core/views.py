@@ -54,12 +54,15 @@ def is_superuser(user):
 @login_required
 @user_passes_test(is_superuser)
 def painel_super(request):
+    foto_perfil_url = get_foto_perfil(request.user)
+
     return render(request, 'core/painel_super.html', {
         'usuario': request.user,
         'total_professores': Professor.objects.count(),
         'total_alunos': Aluno.objects.count(),
         'total_turmas': Turma.objects.count(),
         'total_disciplinas': Disciplina.objects.count(),
+        'foto_perfil_url': foto_perfil_url,
     })
 
 
@@ -68,25 +71,93 @@ def painel_super(request):
 @user_passes_test(is_superuser)
 def editar_perfil(request):
     user = request.user
+
+    # Descobre se esse user é professor/aluno/gestor
+    perfil = None
+    if hasattr(user, "professor"):
+        perfil = user.professor
+    elif hasattr(user, "aluno"):
+        perfil = user.aluno
+    elif hasattr(user, "gestor"):
+        perfil = user.gestor
+
     if request.method == 'POST':
         form = EditarPerfilForm(request.POST, instance=user)
+
         if form.is_valid():
-            # Salva dados normais (nome, email) sem alterar a senha
             user = form.save(commit=False)
             user.save()
-            
-            # Só altera a senha se algo foi digitado
+
             nova_senha = form.cleaned_data.get('nova_senha')
             if nova_senha:
                 user.set_password(nova_senha)
                 user.save()
                 update_session_auth_hash(request, user)
-            
-            messages.success(request, "Perfil atualizado com sucesso.")
-            return redirect('painel_super')
+
+            # Foto vinda do input <input type="file" name="foto">
+            foto = request.FILES.get("foto")
+            if perfil and foto:
+                perfil.foto = foto
+                perfil.save()
+
+            messages.success(request, "Perfil atualizado com sucesso!")
+            return redirect("painel_super")
+
     else:
         form = EditarPerfilForm(instance=user)
-    return render(request, 'core/editar_perfil.html', {'form': form})
+
+    # para o template poder mostrar a foto atual
+    foto_atual = None
+    if perfil and perfil.foto:
+        foto_atual = perfil.foto.url
+
+    return render(request, "core/editar_perfil.html", {
+        "form": form,
+        "perfil": perfil,
+        "foto_atual": foto_atual,
+        "foto_perfil_url": get_foto_perfil(user),  # já reaproveita na base
+    })
+
+
+
+def get_foto_perfil(user):
+    """Retorna a foto do perfil caso exista."""
+    try:
+        if hasattr(user, "professor") and user.professor.foto:
+            return user.professor.foto.url
+        if hasattr(user, "aluno") and user.aluno.foto:
+            return user.aluno.foto.url
+        if hasattr(user, "gestor") and user.gestor.foto:
+            return user.gestor.foto.url
+    except:
+        pass
+    return None
+
+@login_required
+def remover_foto_perfil(request):
+    user = request.user
+
+    # detecta perfil (professor, aluno ou gestor)
+    perfil = None
+    if hasattr(user, "professor"):
+        perfil = user.professor
+    elif hasattr(user, "aluno"):
+        perfil = user.aluno
+    elif hasattr(user, "gestor"):
+        perfil = user.gestor
+
+    if not perfil:
+        messages.error(request, "Nenhum perfil associado ao usuário.")
+        return redirect("editar_perfil")
+
+    # remove a foto se existir
+    if perfil.foto:
+        perfil.foto.delete(save=False)  # apaga o arquivo físico
+        perfil.foto = None
+        perfil.save()
+
+    messages.success(request, "Foto removida com sucesso!")
+    return redirect("editar_perfil")
 
 
 # -------------------- PROFESSORES --------------------
@@ -517,7 +588,11 @@ def painel_professor(request):
         return redirect('login')
     professor = request.user.professor
     disciplinas = Disciplina.objects.filter(professor=professor)
-    return render(request, 'core/painel_professor.html', {'disciplinas': disciplinas})
+    foto_perfil_url = get_foto_perfil(request.user)
+    return render(request, 'core/painel_professor.html', {
+        'disciplinas': disciplinas,
+        'foto_perfil_url': foto_perfil_url,
+    })
 
     
 
@@ -601,7 +676,6 @@ def painel_aluno(request):
         'notas_dict': notas_dict,
     })
 
-
 @login_required
 def cadastrar_disciplina_para_turma(request, turma_id):
     if not request.user.is_superuser:
@@ -627,11 +701,10 @@ def cadastrar_disciplina_para_turma(request, turma_id):
                     turma=turma
                 )
                 messages.success(request, "Disciplina cadastrada com sucesso!")
-
-                # 🔥 REDIRECIONA PARA A LISTA DE DISCIPLINAS DA TURMA
                 return redirect('listar_disciplinas_turma', turma_id=turma.id)
 
-    professores = Professor.objects.all()
+    # 🔥 Agora lista apenas professores reais (ignora superusuário)
+    professores = Professor.objects.filter(user__is_superuser=False)
 
     return render(request, 'core/cadastrar_disciplina_turma.html', {
         'turma': turma,
@@ -654,4 +727,196 @@ def listar_disciplinas_turma(request, turma_id):
         "turma": turma,
         "disciplinas": disciplinas,
         "query": query
+    })
+
+
+# helper para pegar foto do usuário de forma segura
+def get_foto_perfil(user):
+    # Professor
+    try:
+        if hasattr(user, "professor") and user.professor.foto:
+            return user.professor.foto.url
+    except:
+        pass
+
+    # Aluno
+    try:
+        if hasattr(user, "aluno") and user.aluno.foto:
+            return user.aluno.foto.url
+    except:
+        pass
+
+    # Gestor
+    try:
+        if hasattr(user, "gestor") and user.gestor.foto:
+            return user.gestor.foto.url
+    except:
+        pass
+
+    return None
+
+
+HORARIOS = {
+    "manha": [
+        "07:00 às 07:45",
+        "07:45 às 08:30",
+        "08:50 às 09:35",
+        "09:35 às 10:20",
+        "10:30 às 11:15",
+        "11:15 às 12:00",
+    ],
+    "tarde": [
+        "13:00 às 13:45",
+        "13:45 às 14:30",
+        "14:50 às 15:35",
+        "15:35 às 16:20",
+        "16:30 às 17:15",
+        "17:15 às 18:00",
+    ],
+    "noite": [
+        "19:00 às 19:45",
+        "19:45 às 20:30",
+        "20:40 às 21:25",
+        "21:25 às 22:10",
+    ],
+}
+
+from .models import GradeHorario
+
+from .models import GradeHorario
+from django.contrib import messages
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+
+HORARIOS = {
+    "manha": [
+        "07:00 às 07:45",
+        "07:45 às 08:30",
+        "08:50 às 09:35",
+        "09:35 às 10:20",
+        "10:30 às 11:15",
+        "11:15 às 12:00",
+    ],
+    "tarde": [
+        "13:00 às 13:45",
+        "13:45 às 14:30",
+        "14:50 às 15:35",
+        "15:35 às 16:20",
+        "16:30 às 17:15",
+        "17:15 às 18:00",
+    ],
+    "noite": [
+        "19:00 às 19:45",
+        "19:45 às 20:30",
+        "20:40 às 21:25",
+        "21:25 às 22:10",
+    ],
+}
+
+
+from .models import GradeHorario
+from django.contrib import messages
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+
+HORARIOS = {
+    "manha": [
+        "07:00 às 07:45",
+        "07:45 às 08:30",
+        "08:50 às 09:35",
+        "09:35 às 10:20",
+        "10:30 às 11:15",
+        "11:15 às 12:00",
+    ],
+    "tarde": [
+        "13:00 às 13:45",
+        "13:45 às 14:30",
+        "14:50 às 15:35",
+        "15:35 às 16:20",
+        "16:30 às 17:15",
+        "17:15 às 18:00",
+    ],
+    "noite": [
+        "19:00 às 19:45",
+        "19:45 às 20:30",
+        "20:40 às 21:25",
+        "21:25 às 22:10",
+    ],
+}
+
+@login_required
+def grade_horaria(request, turma_id):
+    turma = get_object_or_404(Turma, id=turma_id)
+
+    # cria a grade caso não exista
+    grade, criado = GradeHorario.objects.get_or_create(turma=turma)
+
+    dias = ["segunda", "terca", "quarta", "quinta", "sexta"]
+    nomes_dias = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta"]
+
+    # 🔥 NORMALIZA O TURNO PARA EVITAR KeyError
+    turno_key = (
+        turma.turno.lower()
+        .replace("ã", "a")
+        .replace("á", "a")
+    )
+
+    horarios = HORARIOS.get(turno_key, [])
+
+    # evita crash caso exista turno inválido
+    if not horarios:
+        messages.error(request, "Turno inválido nesta turma.")
+        horarios = [""]  
+
+    # se a grade estiver vazia, cria estrutura
+    if not grade.dados:
+        grade.dados = {dia: [""] * len(horarios) for dia in dias}
+        grade.save()
+
+    disciplinas = Disciplina.objects.filter(turma=turma)
+
+    # ---------- SALVAR (POST) ----------
+    if request.method == "POST":
+        new_data = {dia: [] for dia in dias}
+
+        for i in range(len(horarios)):
+            for dia in dias:
+                campo = f"{dia}_{i}"
+                valor = request.POST.get(campo, "")
+                new_data[dia].append(valor)
+
+        grade.dados = new_data
+        grade.save()
+
+        messages.success(request, "Grade horária atualizada com sucesso!")
+        return redirect("grade_horaria", turma_id=turma.id)
+
+    # ---------- MONTAR LINHAS PARA O TEMPLATE ----------
+    rows = []
+    for i, horario in enumerate(horarios):
+        row = {
+            "index": i,
+            "horario": horario,
+            "cols": []
+        }
+
+        for dia in dias:
+            lista = grade.dados.get(dia, [])
+            valor = ""
+
+            if isinstance(lista, list) and i < len(lista):
+                valor = lista[i] or ""
+
+            row["cols"].append({
+                "dia": dia,
+                "valor": valor,
+            })
+
+        rows.append(row)
+
+    return render(request, "core/grade_horaria.html", {
+        "turma": turma,
+        "nomes_dias": nomes_dias,
+        "rows": rows,
+        "disciplinas": disciplinas,
     })

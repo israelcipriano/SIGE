@@ -7,7 +7,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     
     path('painel/super/', views.painel_super, name='painel_super'),
-    path('editar/perfil/', views.editar_perfil, name='editar_perfil_super'),
+    path('editar/perfil/', views.editar_perfil, name='editar_perfil'),
 
 
     #Docentes
@@ -83,7 +83,12 @@ path(
     ), name='password_reset_complete'),
 
     path('painel/aluno/', views.painel_aluno, name='painel_aluno'),
+    path("editar/perfil/remover-foto/", views.remover_foto_perfil, name="remover_foto_perfil"),
+
+    path("turmas/<int:turma_id>/grade/", views.grade_horaria, name="grade_horaria"),
 
 
 
 ]
+
+
