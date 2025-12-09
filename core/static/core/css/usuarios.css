@@ -12,32 +12,31 @@ body {
     overflow-x: hidden;
 }
 
-
 /* Conteúdo Rolável da Página */
 main {
     margin-left: 220px;
-    margin-top: 60px; 
+    margin-top: 20px; /* ↓ reduzido (antes 60px) */
     padding: 20px;
 }
 
 .titulo-painel {
     font-size: 2.8rem;
     color: #1b263b;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     text-align: center;
     font-weight: normal;
-    margin-top: 80px;
+    margin-top: 20px; /* ↓ reduzido (antes 80px) */
     letter-spacing: 0.1em;
 }
 
-/* Cards */
+/* Cards container */
 .cards-total {
     display: flex;
-    gap: 30px; 
+    gap: 20px; 
     justify-content: center;
     flex-wrap: wrap; 
-    padding: 20px 0;
-    margin-top: 80px;
+    padding: 10px 0;
+    margin-top: 30px; /* ↓ reduzido (antes 80px) */
 }
 
 /* Cards individuais */
@@ -45,14 +44,14 @@ main {
     background-color: #f6f7fb; 
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    padding: 30px 40px;
+    padding: 30px 30px;
+    width: 300px;   /* ↓ menor para caber lado a lado */
+    height: 180px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    width: 400px; 
-    height: 200px;
     transition: transform 0.2s ease-in-out, background-color 0.2s;
     cursor: pointer;
 }
@@ -74,6 +73,16 @@ main {
     font-weight: normal;
 }
 
+/* REMOVE COR ROXA DOS LINKS */
+a {
+    color: inherit !important;
+    text-decoration: none;
+}
+
+a:visited {
+    color: inherit !important;
+}
+
 /* Responsividade para Tablets e Telas Médias */
 @media (max-width: 1024px) {
     .menu-lateral {
@@ -85,50 +94,50 @@ main {
     }
 }
 
-/* Responsividade para Celular*/
+/* Responsividade para Celular */
 @media (max-width: 768px) {
+
     .menu-principal h2 {
         font-size: 1.2rem;
     }
 
     .hamburguer {
-        display: block !important; 
-        margin-left: auto; 
+        display: block !important;
+        margin-left: auto;
     }
 
     .menu-icones {
         margin-left: 15px;
     }
 
-    /* Menu Lateral Recolhível */
     .menu-lateral {
-        left: -100%; 
+        left: -100%;
         width: 200px;
         height: calc(100% - 60px);
     }
 
     .menu-lateral.ativo {
-        left: 0; 
+        left: 0;
     }
 
     main {
         margin-left: 0;
         padding: 15px;
     }
-    
-    /* Cards de Usuários em Mobile */
+
     .cards-total {
-        flex-direction: column; 
+        flex-direction: column;
         align-items: center;
         gap: 20px;
+        margin-top: 15px;
     }
-    
+
     .card-usuario {
-        width: 90%; 
+        width: 90%;
         max-width: 250px;
-        height: auto; 
+        height: auto;
     }
-    
+
     .card-usuario .icon {
         font-size: 3em;
     }

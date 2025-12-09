@@ -1,0 +1,45 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Painel de Usuários{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'core/css/usuarios.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<main class="conteudo-principal-rolavel">
+
+    <div class="painel-usuarios">
+        <h2 class="titulo-painel">Usuários do Sistema</h2>
+
+        <div class="cards-total">
+
+            <!-- Discentes -->
+            <a href="{% url 'listar_alunos' %}" class="card-usuario">
+                <i class="fas fa-user-graduate icon"></i>
+                <span class="label">Discentes</span>
+            </a>
+
+            <!-- Docentes -->
+            <a href="{% url 'listar_professores' %}" class="card-usuario">
+                <i class="fas fa-chalkboard-teacher icon"></i>
+                <span class="label">Docentes</span>
+            </a>
+
+            <!-- Gestão Escolar -->
+            {% if pode_ver_gestores %}
+            <a href="{% url 'listar_gestores' %}" class="card-usuario">
+                <i class="fas fa-user-tie icon"></i>
+                <span class="label">Gestão Escolar</span>
+            </a>
+            {% endif %}
+
+
+        </div>
+    </div>
+
+</main>
+
+{% endblock %}

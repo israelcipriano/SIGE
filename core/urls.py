@@ -87,6 +87,8 @@ path(
 
     path("turmas/<int:turma_id>/grade/", views.grade_horaria, name="grade_horaria"),
 
+    path("usuarios/", views.usuarios, name="usuarios"),
+
 
 
 ]

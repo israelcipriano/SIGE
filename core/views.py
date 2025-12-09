@@ -88,6 +88,19 @@ def painel_super(request):
         "calendario": gerar_calendario(),
     })
 
+@login_required
+def usuarios(request):
+    pode_ver_gestores = False
+
+    if request.user.is_superuser:
+        pode_ver_gestores = True
+    elif hasattr(request.user, 'gestor'):
+        if request.user.gestor.cargo in ('diretor', 'vice_diretor'):
+            pode_ver_gestores = True
+
+    return render(request, "core/usuarios.html", {
+        "pode_ver_gestores": pode_ver_gestores
+    })
 
 
 @login_required
