@@ -1,0 +1,41 @@
+main {
+    margin-left: 220px;
+    margin-top: 20px; /* ↓ antes era 60px */
+    padding: 20px;
+}
+
+.titulo
+{
+    font-size:40px;
+    align-items:center;
+    justify-content:center;
+    display: flex;
+    padding:10px;
+    border-bottom:1px solid #ededed;
+}
+
+.formulario
+{
+    padding-top:20px;
+}
+
+
+
+/* Responsividade para Tablets e Telas Médias */
+@media (max-width: 1024px) {
+
+    main {
+        margin-left: 180px;
+    }
+
+}
+
+/* Responsividade para Celular */
+@media (max-width: 768px) {
+
+    main {
+        margin-left: 0;
+        padding: 15px;
+    }
+
+}
