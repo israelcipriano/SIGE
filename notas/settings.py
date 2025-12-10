@@ -135,10 +135,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Envio de e-mails via Outlook / Office 365
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.office365.com" #o smtp muda de dominio pra dominio, ta como outlook ou hotmail, caso for pra gamil, mudem
+EMAIL_HOST = "smtp.gmail.com" #o smtp muda de dominio pra dominio, ta como outlook ou hotmail, caso for pra gamil, mudem
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
-EMAIL_HOST_USER = "email" # aqui é pra colocar o email que ficará enviando os email pra quem for recuperar a senha
-EMAIL_HOST_PASSWORD = "senha_do_email" # aqui a senha do email. porem não pode ser a senha normal, terá que usar um autenticador e emitir uma senha so pra isso
+EMAIL_HOST_USER = "miuradevs@gmail.com" # aqui é pra colocar o email que ficará enviando os email pra quem for recuperar a senha
+EMAIL_HOST_PASSWORD = "ukoh btlb ygzm xxfq" # aqui a senha do email. porem não pode ser a senha normal, terá que usar um autenticador e emitir uma senha so pra isso
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

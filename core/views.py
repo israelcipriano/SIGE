@@ -104,11 +104,10 @@ def usuarios(request):
 
 
 @login_required
-@user_passes_test(is_superuser)
 def editar_perfil(request):
     user = request.user
 
-    # Descobre se esse user é professor/aluno/gestor
+    # Detecta se o usuário tem um perfil associado
     perfil = None
     if hasattr(user, "professor"):
         perfil = user.professor
@@ -116,33 +115,47 @@ def editar_perfil(request):
         perfil = user.aluno
     elif hasattr(user, "gestor"):
         perfil = user.gestor
+    # superusuário continua sem perfil, e funciona mesmo assim
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = EditarPerfilForm(request.POST, instance=user)
 
         if form.is_valid():
             user = form.save(commit=False)
             user.save()
 
-            nova_senha = form.cleaned_data.get('nova_senha')
+            # Se o campo "nova senha" foi preenchido
+            nova_senha = form.cleaned_data.get("nova_senha")
             if nova_senha:
                 user.set_password(nova_senha)
                 user.save()
-                update_session_auth_hash(request, user)
+                update_session_auth_hash(request, user)  # mantém logado
 
-            # Foto vinda do input <input type="file" name="foto">
+            # Se enviou foto e o usuário tem perfil com campo foto
             foto = request.FILES.get("foto")
             if perfil and foto:
                 perfil.foto = foto
                 perfil.save()
 
             messages.success(request, "Perfil atualizado com sucesso!")
-            return redirect("painel_super")
+
+            # Redirecionamento correto de acordo com o tipo de usuário
+            if user.is_superuser:
+                return redirect("painel_super")
+            if hasattr(user, "professor"):
+                return redirect("painel_professor")
+            if hasattr(user, "aluno"):
+                return redirect("painel_aluno")
+            if hasattr(user, "gestor"):
+                return redirect("painel_gestor")
+
+            # fallback (quase nunca usado)
+            return redirect("login")
 
     else:
         form = EditarPerfilForm(instance=user)
 
-    # para o template poder mostrar a foto atual
+    # foto atual se existir
     foto_atual = None
     if perfil and perfil.foto:
         foto_atual = perfil.foto.url
@@ -151,23 +164,42 @@ def editar_perfil(request):
         "form": form,
         "perfil": perfil,
         "foto_atual": foto_atual,
-        "foto_perfil_url": get_foto_perfil(user),  # já reaproveita na base
+        "foto_perfil_url": get_foto_perfil(user),
     })
 
 
 
 def get_foto_perfil(user):
-    """Retorna a foto do perfil caso exista."""
+    # Professor
     try:
         if hasattr(user, "professor") and user.professor.foto:
             return user.professor.foto.url
+    except:
+        pass
+
+    # Aluno
+    try:
         if hasattr(user, "aluno") and user.aluno.foto:
             return user.aluno.foto.url
+    except:
+        pass
+
+    # Gestor
+    try:
         if hasattr(user, "gestor") and user.gestor.foto:
             return user.gestor.foto.url
     except:
         pass
+
+    # SUPERSUÁRIO
+    try:
+        if hasattr(user, "superperfil") and user.superperfil.foto:
+            return user.superperfil.foto.url
+    except:
+        pass
+
     return None
+
 
 @login_required
 def remover_foto_perfil(request):
@@ -712,6 +744,7 @@ def lancar_nota(request, disciplina_id):
 
 
 # ALUNO
+# ALUNO
 @login_required
 def painel_aluno(request):
     if not hasattr(request.user, 'aluno'):
@@ -719,20 +752,23 @@ def painel_aluno(request):
 
     aluno = request.user.aluno
 
-    # Todas as disciplinas da turma do aluno
+    # Pega todas as disciplinas da turma
     disciplinas = Disciplina.objects.filter(turma=aluno.turma)
 
-    # Monta um dicionário: disciplina_id -> Nota ou None
-    notas_dict = {}
+    # Cria lista estruturada: cada item terá {disciplina, nota}
+    disciplinas_com_notas = []
     for disciplina in disciplinas:
         nota = Nota.objects.filter(aluno=aluno, disciplina=disciplina).first()
-        notas_dict[disciplina.id] = nota
+        disciplinas_com_notas.append({
+            "disciplina": disciplina,
+            "nota": nota
+        })
 
     return render(request, 'core/painel_aluno.html', {
-        'aluno': aluno,
-        'disciplinas': disciplinas,
-        'notas_dict': notas_dict,
+        "aluno": aluno,
+        "disciplinas_com_notas": disciplinas_com_notas,
     })
+
 
 @login_required
 def cadastrar_disciplina_para_turma(request, turma_id):

@@ -94,3 +94,4 @@ class GradeHorario(models.Model):
 
     def __str__(self):
         return f"Grade Horária - {self.turma}"
+
