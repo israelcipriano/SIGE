@@ -36,6 +36,22 @@
     </form>
   </div>
 
+  <!-- Filtro por ano letivo -->
+  <form method="get" style="margin-bottom: 20px;">
+    <label><strong>Ano letivo:</strong></label>
+    <select name="ano" onchange="this.form.submit()" style="padding: 5px;">
+      {% for ano in anos_disponiveis %}
+        <option value="{{ ano }}" {% if ano == ano_filtro %}selected{% endif %}>
+          {{ ano }}
+        </option>
+      {% endfor %}
+    </select>
+
+    {% if query %}
+      <input type="hidden" name="q" value="{{ query }}">
+    {% endif %}
+  </form>
+
   <!-- Conteúdo principal -->
   <div class="content-box">
     <h2 class="titulo">TURMAS CADASTRADAS</h2>
@@ -44,6 +60,7 @@
       <thead>
         <tr class="tabela-principal">
           <th class="tabela-cabecalho">NOME</th>
+          <th class="tabela-cabecalho">TURNO</th>
           <th class="tabela-cabecalho">AÇÕES</th>
         </tr>
       </thead>
@@ -51,22 +68,24 @@
         {% for turma in turmas %}
           <tr class="linhas-tabela">
             <td class="tabela-info">{{ turma.nome }}</td>
+            <td class="tabela-info">{{ turma.get_turno_display }}</td>
+
             <td class="tabela-icones">
-              <a href="{% url 'editar_turma' turma.id %}" class="action-btn editar" title="Editar">
-                <i class="fas fa-pen-to-square"></i>
-              </a>
-              <a href="{% url 'excluir_turma' turma.id %}" class="action-btn deletar" title="Excluir" onclick="return confirm('Deseja excluir esta turma?')">
-                <i class="fas fa-trash-can"></i>
+              <a href="{% url 'listar_disciplinas_turma' turma.id %}"
+                class="action-btn adicionar"
+                title="Ver Disciplinas da Turma">
+                  <i class="fas fa-book-medical"></i>
               </a>
             </td>
           </tr>
         {% empty %}
           <tr class="linhas-tabela">
-            <td class="tabela-info" colspan="2">Nenhuma turma encontrada.</td>
+            <td class="tabela-info" colspan="3">Nenhuma turma encontrada.</td>
           </tr>
         {% endfor %}
       </tbody>
     </table>
+
   </div>
 
 </div>

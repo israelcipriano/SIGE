@@ -161,7 +161,7 @@ form {
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
 }
 
-.input-container input:focus + .icon {
+.input-container input:focus+.icon {
   color: grey;
   transform: translateY(-50%) scale(1.2);
 }
@@ -190,6 +190,7 @@ button:hover {
   font-size: 14px;
   color: #000;
   opacity: 0.8;
+  text-decoration: none !important;
 }
 
 .forgot-link:hover {
@@ -199,7 +200,7 @@ button:hover {
 /* RESPONSIVO */
 @media (max-width: 900px) {
   body {
-    height: auto; 
+    height: auto;
     display: block;
     padding-top: 5px;
   }
@@ -207,13 +208,13 @@ button:hover {
   .login-box {
     flex-direction: column;
     min-height: auto;
-    margin: 0 auto; 
+    margin: 0 auto;
   }
 
   .logo-area {
     flex: none;
     padding: 30px 15px;
-    border-radius: 20px 20px 30px 30px;
+    border-radius: 20px 20px 20px 20px;
   }
 
   .logo {

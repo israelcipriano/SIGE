@@ -1,7 +1,5 @@
 {% extends 'core/base.html' %}
 {% load static %}
-{% load custom_tags %}
-{% load dict_get %}
 
 {% block title %}Painel do Aluno{% endblock %}
 {% block header_title %}Painel do Aluno{% endblock %}
@@ -35,24 +33,26 @@
         </tr>
       </thead>
       <tbody>
-        {% for disciplina in disciplinas %}
-          {% with nota=notas_dict|dict_get:disciplina.id %}
+
+        {% for item in disciplinas_com_notas %}
           <tr>
-            <td>{{ disciplina.nome }}</td>
-            <td>{{ nota.nota1|default_if_none:"-" }}</td>
-            <td>{{ nota.nota2|default_if_none:"-" }}</td>
-            <td>{{ nota.nota3|default_if_none:"-" }}</td>
-            <td>{{ nota.nota4|default_if_none:"-" }}</td>
+            <td>{{ item.disciplina.nome }}</td>
+
+            <td>{{ item.nota.nota1|default_if_none:"-" }}</td>
+            <td>{{ item.nota.nota2|default_if_none:"-" }}</td>
+            <td>{{ item.nota.nota3|default_if_none:"-" }}</td>
+            <td>{{ item.nota.nota4|default_if_none:"-" }}</td>
+
             <td>
-              {% if nota and nota.media %}
-                {{ nota.media|floatformat:2 }}
+              {% if item.nota and item.nota.media %}
+                {{ item.nota.media|floatformat:2 }}
               {% else %}
                 -
               {% endif %}
             </td>
           </tr>
-          {% endwith %}
         {% endfor %}
+
       </tbody>
     </table>
   </div>

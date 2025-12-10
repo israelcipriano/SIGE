@@ -1,0 +1,33 @@
+
+.env
+db.sqlite3
+__pycache__/
+*.pyc
+
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ambiente virtual
+venv/
+.env/
+
+# SQLite (opcional, mas recomendado)
+db.sqlite3
+
+# Arquivos temporários
+*.log
+*.pot
+*.py~ 
+*~
+
+# Diretórios do Django
+/staticfiles/
+media/
+
+# IDE (opcional)
+.vscode/
+.idea/

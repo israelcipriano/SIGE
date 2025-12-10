@@ -1,0 +1,33 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'core/css/cadastrar_disciplina.css' %}">
+{% endblock %}
+{% block content %}
+<main class="conteudo">
+    <h2 class="titulo">Adicionar Disciplina em {{ turma.nome }}</h2>
+
+    <form method="POST" class="formulario">
+        {% csrf_token %}
+
+        <div class="linha">
+            <label>Nome da Disciplina:</label>
+            <input type="text" name="nome" placeholder="Digite o nome da disciplina" required>
+        </div>
+        <div class="linha">
+            <label>Professor Responsável:</label>
+            <select name="professor" required>
+                <option selected disabled>Selecione o professor</option>
+            {% for prof in professores %}
+                <option value="{{ prof.id }}">{{ prof.nome_completo }}</option>
+            {% endfor %}
+            </select>
+        </div>
+        <div class="acoes">
+            <a href="{% url 'listar_disciplinas_turma' turma.id %}" class="btn btn-secondary">Voltar</a>
+            <button type="submit" class="btn btn-primary">Salvar</button>
+        </div>
+    </form>
+</main>
+
+{% endblock %}

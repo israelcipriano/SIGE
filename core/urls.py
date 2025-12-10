@@ -7,7 +7,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     
     path('painel/super/', views.painel_super, name='painel_super'),
-    path('editar/perfil/', views.editar_perfil, name='editar_perfil_super'),
+    path('editar/perfil/', views.editar_perfil, name='editar_perfil'),
 
 
     #Docentes
@@ -28,10 +28,21 @@ urlpatterns = [
     path('alunos/excluir/<int:aluno_id>/', views.excluir_aluno, name='excluir_aluno'),
 
     #Disciplinas
-    path('disciplinas/', views.listar_disciplinas, name='listar_disciplinas'),
-    path('disciplinas/cadastrar/', views.cadastrar_disciplina, name='cadastrar_disciplina'),
     path('disciplinas/editar/<int:disciplina_id>/', views.editar_disciplina, name='editar_disciplina'),
     path('disciplinas/excluir/<int:disciplina_id>/', views.excluir_disciplina, name='excluir_disciplina'),
+    path(
+    'turmas/<int:turma_id>/disciplinas/',
+    views.listar_disciplinas_turma,
+    name='listar_disciplinas_turma'
+),
+
+# Cadastrar disciplina por turma
+path(
+    'turmas/<int:turma_id>/disciplinas/cadastrar/',
+    views.cadastrar_disciplina_para_turma,
+    name='cadastrar_disciplina_turma'
+),
+
 
     #Turmas
     path('turmas/', views.listar_turmas, name='listar_turmas'),
@@ -72,4 +83,14 @@ urlpatterns = [
     ), name='password_reset_complete'),
 
     path('painel/aluno/', views.painel_aluno, name='painel_aluno'),
+    path("editar/perfil/remover-foto/", views.remover_foto_perfil, name="remover_foto_perfil"),
+
+    path("turmas/<int:turma_id>/grade/", views.grade_horaria, name="grade_horaria"),
+
+    path("usuarios/", views.usuarios, name="usuarios"),
+
+
+
 ]
+
+
